@@ -78,8 +78,6 @@ This project is licensed under the GNU General Public License (GPL) v3.0. You ca
 
 This project is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this project. If not, see <https://www.gnu.org/licenses/>.
-
 ## Contact
 
 For any questions or feedback, please contact the author:
