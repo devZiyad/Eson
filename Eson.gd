@@ -50,7 +50,7 @@ func save_json(file_path: String) -> bool:
 	if file == null:
 		return false
 	
-	var json_string = JSON.stringify(json_data, "\t")
+	var json_string = JSON.stringify(json_data, "\t", false)
 	
 	file.store_string(json_string)
 	file.close()
