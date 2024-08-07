@@ -74,12 +74,20 @@ func key_exists(key: Variant) -> bool:
 	return json_data.has(key)
 
 
-func get_all_keys() -> Array:
-	return json_data.keys()
+func get_all_keys(reversed: bool = false) -> Array:
+    if !reversed:
+        return json_data.keys()
+    var data_temp: Array = json_data.keys()
+    data_temp.reverse()
+    return data_temp
 
 
-func get_all_values() -> Array:
-	return json_data.values()
+func get_all_values(reversed: bool = false) -> Array:
+    if !reversed:
+        return json_data.values()
+    var data_temp: Array = json_data.values()
+    data_temp.reverse()
+    return data_temp
 
 
 func clear_data() -> void:
