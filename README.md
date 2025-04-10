@@ -35,41 +35,46 @@ Here is a brief example of how to use the `Eson` class in your Godot project:
 extends Node
 
 func _ready():
-    var eson = Eson.new()
+	var eson = Eson.new()
 
-    # Load JSON data from a file
-    if eson.load_json("res://data.json"):
-        print("JSON loaded successfully!")
+	# Load JSON data from a file
+	if eson.load_json("res://data.json"):
+		print("✅ JSON loaded successfully!")
 
-    # Retrieve a value
-    var value = eson.get_value("key")
-    print("Value for 'key': ", value)
+	# Set nested values using colon-delimited keys
+	eson.set_value("player:name", "Ziyad")
+	eson.set_value("player:stats:score", 1200)
+	eson.set_value("player:stats:level", 5)
+	eson.set_value("settings:audio:volume", 0.75)
 
-    # Set a value
-    if eson.set_value("key", "new_value"):
-        print("Value set successfully!")
+	# Get values using nested keys
+	var name = eson.get_value("player:name")
+	var score = eson.get_value("player:stats:score")
+	var volume = eson.get_value("settings:audio:volume")
 
-    # Save JSON data to a file
-    if eson.save_json("res://data.json"):
-        print("JSON saved successfully!")
+	print("👤 Name:", name)
+	print("🏆 Score:", score)
+	print("🔊 Volume:", volume)
 
-    # Delete a key
-    eson.delete_key("key")
+	# Check if nested key exists
+	if eson.key_exists("player:stats:level"):
+		print("📌 Level key exists!")
 
-    # Check if a key exists
-    if eson.key_exists("key"):
-        print("Key exists!")
-    else:
-        print("Key does not exist!")
+	# Delete a nested key
+	eson.delete_key("settings:audio:volume")
+	print("🗑️ Deleted 'settings:audio:volume'")
 
-    # Get all keys and values
-    var keys = eson.get_all_keys()
-    var values = eson.get_all_values()
-    print("Keys: ", keys)
-    print("Values: ", values)
+	# Save the modified JSON back to the file
+	if eson.save_json("res://data.json"):
+		print("💾 JSON saved successfully!")
 
-    # Clear all data
-    eson.clear_data()
+	# Show all root keys (note: does not show nested keys)
+	print("📂 Root-level keys:", eson.get_all_keys())
+
+	# Clear everything
+	eson.clear_data()
+	print("🧹 All data cleared!")
+
 ```
 
 ## License
