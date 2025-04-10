@@ -1,17 +1,19 @@
 """
-Credits and License Information
--------------------------------
+Eson - JSON Data Manager (v2)
+-----------------------------
 
-Author: devZiyad
-GitHub: https://github.com/devZiyad
-Date: Sun, August 4 2024
-Description: class provides methods for managing JSON data.
+Author: devZiyad  
+GitHub: https://github.com/devZiyad  
+Date: Wed, April 10, 2025  
+Version: 2.0  
+Description: A utility class for loading, saving, and managing nested JSON data in Godot.  
+			 Supports dot-style key access (e.g., "settings:graphics:resolution").
 
 License: GNU General Public License (GPL) v3.0
 
-This script is provided as-is without any warranties or guarantees. Use it at your own risk.
+Disclaimer: This script is provided as-is without any warranties or guarantees.
+Use it at your own risk.
 """
-
 
 class_name Eson
 
@@ -57,38 +59,66 @@ func save_json(file_path: String) -> bool:
 	return true
 
 
-func get_value(key: Variant) -> Variant:
-	return json_data.get(key)
+func get_value(key: String) -> Variant:
+	if not key.contains(":"):
+		return json_data.get(key)
+	var keys: PackedStringArray = key.split(":")
+	var valueptr: Variant = json_data.get(keys[0])
+	var index: int = 1
+	while (valueptr != null and typeof(valueptr) == TYPE_DICTIONARY and index < keys.size()):
+		valueptr = valueptr.get(keys.get(index))
+		index += 1
+	return valueptr
 
 
-func set_value(key: Variant, value: Variant) -> bool:
-	json_data[key] = value
-	return (key_exists(key) and get_value(key) == value)
+func set_value(key: String, value: Variant) -> bool:
+	if not key.contains(":"):
+		json_data[key] = value
+		return (key_exists(key) and (get_value(key) == value))
+	
+	var keys: PackedStringArray = key.split(":")
+	var dictptr: Dictionary = json_data.get_or_add(keys[0], {})
+	var index: int = 1
+	while ((dictptr != null) and (typeof(dictptr) == TYPE_DICTIONARY) and (index < (keys.size() - 1))):
+		dictptr = dictptr.get_or_add(keys.get(index), {})
+		index += 1
+	dictptr.set(keys.get(index), value)
+	return (dictptr.has(keys.get(index)) and (get_value(key) == value))
 
 
-func delete_key(key: Variant) -> void:
-	json_data.erase(key)
+func delete_key(key: String) -> void:
+	if not key.contains(":"):
+		json_data.erase(key)
+		return
+	var keys: PackedStringArray = key.split(":")
+	var dictptr: Dictionary = json_data.get(keys[0])
+	var index: int = 1
+	while ((dictptr != null) and (typeof(dictptr) == TYPE_DICTIONARY) and (index < (keys.size() - 1))):
+		dictptr = dictptr.get(keys.get(index))
+		index += 1
+	dictptr.erase(keys.get(index))
 
 
-func key_exists(key: Variant) -> bool:
-	return json_data.has(key)
+func key_exists(key: String) -> bool:
+	return (get_value(key) != null)
 
 
 func get_all_keys(reversed: bool = false) -> Array:
-    if !reversed:
-        return json_data.keys()
-    var data_temp: Array = json_data.keys()
-    data_temp.reverse()
-    return data_temp
+	if !reversed:
+		return json_data.keys()
+	var data_temp: Array = json_data.keys()
+	data_temp.reverse()
+	return data_temp
 
 
 func get_all_values(reversed: bool = false) -> Array:
-    if !reversed:
-        return json_data.values()
-    var data_temp: Array = json_data.values()
-    data_temp.reverse()
-    return data_temp
+	if !reversed:
+		return json_data.values()
+	var data_temp: Array = json_data.values()
+	data_temp.reverse()
+	return data_temp
 
 
-func clear_data() -> void:
+func clear_data() -> bool:
 	json_data.clear()
+	return json_data.is_empty()
